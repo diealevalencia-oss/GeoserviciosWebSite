@@ -150,9 +150,9 @@ function popupGuajira(props) {
         ['CODIGO_NOM', 'Código']
     ];
     const filas = campos
-        .filter(([k]) => props[k] !== undefined && props[k] !== null && props[k] !== '')
-        .map(([k, etiqueta]) => <p style="margin:2px 0"><strong>${etiqueta}:</strong> ${props[k]}</p>);
-    return filas.length ? <div>${filas.join('')}</div> : '<div>Sin atributos</div>';
+    .filter(([k]) => props[k] !== undefined && props[k] !== null && props[k] !== '')
+    .map(([k, etiqueta]) => `<p style="margin:2px 0"><strong>${etiqueta}:</strong> ${props[k]}</p>`);
+return filas.length ? `<div>${filas.join('')}</div>` : '<div>Sin atributos</div>';
 }
 
 // Carga (una sola vez) el GeoJSON de una capa dentro de su layerGroup
