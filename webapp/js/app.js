@@ -1,5 +1,5 @@
-// Crear el mapa centrado en el departamento de La Guajira
-const map = L.map('map').setView([11.35, -72.5], 10);
+// Crear el mapa centrado en el departamento de Boyacá
+const map = L.map('map').setView([5.63, -72.92], 8);
 
 // Agregar capa base de OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -10,8 +10,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // URL del servicio WMS de GeoServer
 const geoserverUrl = 'https://geoportal.dane.gov.co/mparcgis/services/MGN2024/Serv_CapasMGN_2024/MapServer/WMSServer';
 
-// Código DANE del departamento a mostrar: La Guajira
-const GUAJIRA_CCDGO = '44';
+// Código DANE del departamento a mostrar: Boyacá
+const BOYACA_CCDGO = '15';
 
 // Agregar capa WMS de departamentos
 // Nota: el servicio es un ArcGIS MapServer WMS y no admite filtros por atributo (CQL),
@@ -31,9 +31,9 @@ let departamentosGeoJSON; // Variable para almacenar la capa GeoJSON
 fetch(departamentosWFSUrl)
     .then(response => response.json())
     .then(data => {
-        // Crear capa GeoJSON (solo La Guajira)
+        // Crear capa GeoJSON (solo Boyacá)
         departamentosGeoJSON = L.geoJSON(data, {
-            filter: feature => feature.properties.dpto_ccdgo === GUAJIRA_CCDGO,
+            filter: feature => feature.properties.dpto_ccdgo === BOYACA_CCDGO,
             style: {
                 color: '#232323',
                 weight: 2,
@@ -48,16 +48,16 @@ fetch(departamentosWFSUrl)
         controlLayer.addOverlay(departamentosGeoJSON, "Departamentos (WFS)"); // Agregar al control de capas
 
         // Extensión de La Guajira
-        const guajiraBounds = departamentosGeoJSON.getBounds();
+        const boyacaBounds = departamentosGeoJSON.getBounds();
 
                
         // Restringir las teselas de ambos WMS a la extensión de La Guajira
-        departamentosWMS.options.bounds = guajiraBounds;
+        departamentosWMS.options.bounds = boyacaBounds;
         departamentosWMS.redraw();
-        municipiosWMS.options.bounds = guajiraBounds;
+        municipiosWMS.options.bounds = boyacaBounds;
 
-        // Centrar la vista en el departamento de La Guajira
-        map.fitBounds(guajiraBounds);
+        // Centrar la vista en el departamento de Boyacá
+        map.fitBounds(boyacaBounds);
     })
     .catch(error => console.error('Error cargando WFS:', error));
 
@@ -100,45 +100,108 @@ baseMaps["OpenStreetMap"].addTo(map);
 // cuando el usuario activa la capa en el control, porque algunas
 // (Drenaje, Curvas de Nivel, Vías) pesan varios MB.
 // ============================================================
-const guajiraDataDir = './datos/44_LA_GUAJIRA/';
+const boyacaDataDir = './datos/15_BOYACÁ/';
 
-const capasGuajira = [
+// ajustados a las capas de Boyacá
+const capasBoyaca = [
     {
-        file: 'Administrativo_P.geojson', label: 'Topónimos administrativos',
-        tipo: 'punto', color: '#c62828', radio: 4
+        file: 'Administrativo_P.geojson',
+        label: 'Topónimos administrativos',
+        color: '#c62828',
+        radio: 4
     },
     {
-        file: 'Construccion_P.geojson', label: 'Construcciones',
-        tipo: 'punto', color: '#6d4c41', radio: 3
+        file: 'Administrativo_R.geojson',
+        label: 'Áreas administrativas',
+        color: '#ad1457',
+        radio: 4,
+        estilo: {
+            color: '#ad1457',
+            weight: 2,
+            fillColor: '#f48fb1',
+            fillOpacity: 0.2
+        }
     },
     {
-        file: 'Costero_Insular.geojson', label: 'Costero / insular',
-        tipo: 'punto', color: '#00838f', radio: 4
+        file: 'Banco_Arena.geojson',
+        label: 'Bancos de arena',
+        color: '#b8860b',
+        radio: 4,
+        estilo: {
+            color: '#b8860b',
+            weight: 1,
+            fillColor: '#ffe082',
+            fillOpacity: 0.5
+        }
     },
     {
-        file: 'Via.geojson', label: 'Vías',
-        tipo: 'linea', estilo: { color: '#e65100', weight: 1.5 }
+        file: 'Bosque.geojson',
+        label: 'Bosques',
+        estilo: {
+            color: '#1b5e20',
+            weight: 1,
+            fillColor: '#66bb6a',
+            fillOpacity: 0.4
+        }
     },
     {
-        file: 'Drenaje_Sencillo.geojson', label: 'Drenaje sencillo',
-        tipo: 'linea', estilo: { color: '#1e88e5', weight: 1 }
+        file: 'Construccion_P.geojson',
+        label: 'Construcciones',
+        color: '#6d4c41',
+        radio: 3
     },
     {
-        file: 'Curva_Nivel.geojson', label: 'Curvas de nivel',
-        tipo: 'linea', estilo: { color: '#8d6e63', weight: 0.8 }
+        file: 'Curva_Nivel.geojson',
+        label: 'Curvas de nivel',
+        estilo: {
+            color: '#8d6e63',
+            weight: 0.8
+        }
     },
     {
-        file: 'Laguna.geojson', label: 'Lagunas',
-        tipo: 'poligono', estilo: { color: '#0277bd', weight: 1, fillColor: '#4fc3f7', fillOpacity: 0.5 }
+        file: 'Drenaje_Sencillo.geojson',
+        label: 'Drenaje sencillo',
+        estilo: {
+            color: '#1e88e5',
+            weight: 1
+        }
     },
     {
-        file: 'Bosque.geojson', label: 'Bosques',
-        tipo: 'poligono', estilo: { color: '#1b5e20', weight: 1, fillColor: '#66bb6a', fillOpacity: 0.4 }
+        file: 'Isla.geojson',
+        label: 'Islas',
+        color: '#00838f',
+        radio: 4,
+        estilo: {
+            color: '#00838f',
+            weight: 1,
+            fillColor: '#80cbc4',
+            fillOpacity: 0.5
+        }
+    },
+    {
+        file: 'Orografia.geojson',
+        label: 'Orografía',
+        color: '#795548',
+        radio: 4,
+        estilo: {
+            color: '#795548',
+            weight: 1,
+            fillColor: '#bcaaa4',
+            fillOpacity: 0.4
+        }
+    },
+    {
+        file: 'Via.geojson',
+        label: 'Vías',
+        estilo: {
+            color: '#e65100',
+            weight: 1.5
+        }
     }
 ];
 
 // Construye el contenido del popup a partir de los atributos más relevantes
-function popupGuajira(props) {
+function popupBoyaca(props) {
     const campos = [
         ['NOMBRE_GEO', 'Nombre'],
         ['TIPO_VIA', 'Tipo de vía'],
@@ -156,8 +219,8 @@ return filas.length ? `<div>${filas.join('')}</div>` : '<div>Sin atributos</div>
 }
 
 // Carga (una sola vez) el GeoJSON de una capa dentro de su layerGroup
-function cargarCapaGuajira(cfg) {
-    fetch(guajiraDataDir + cfg.file)
+function cargarCapaBoyaca(cfg) {
+    fetch(boyacaDataDir + cfg.file)
         .then(response => response.json())
         .then(data => {
             const capa = L.geoJSON(data, {
@@ -171,7 +234,7 @@ function cargarCapaGuajira(cfg) {
                 }),
                 onEachFeature: (feature, layer) => {
                     if (feature.properties) {
-                        layer.bindPopup(popupGuajira(feature.properties));
+                        layer.bindPopup(popupBoyaca(feature.properties));
                     }
                 }
             });
@@ -181,7 +244,7 @@ function cargarCapaGuajira(cfg) {
 }
 
 // Registrar cada capa como overlay con carga diferida
-capasGuajira.forEach(cfg => {
+capasBoyaca.forEach(cfg => {
     cfg._group = L.layerGroup();
     cfg._loaded = false;
     controlLayer.addOverlay(cfg._group, cfg.label);
@@ -189,10 +252,10 @@ capasGuajira.forEach(cfg => {
 
 // Al activar una capa por primera vez, descargar su GeoJSON
 map.on('overlayadd', function (e) {
-    const cfg = capasGuajira.find(c => c._group === e.layer);
+    const cfg = capasBoyaca.find(c => c._group === e.layer);
     if (cfg && !cfg._loaded) {
         cfg._loaded = true;
-        cargarCapaGuajira(cfg);
+        cargarCapaBoyaca(cfg);
     }
 });
 
@@ -249,7 +312,7 @@ const info = L.control({position: 'topleft'});
 info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info');
     this._div.innerHTML = `
-        <h4>La Guajira - Servicios Geográficos</h4>
+        <h4>Boyacá - Servicios Geográficos</h4>
         <p>Visualización del departamento y sus municipios</p>
         <p><small>Datos: DANE | Servidor: GeoServer</small></p>
     `;
@@ -304,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Marcador de Riohacha (capital de La Guajira)
-const riohachaMarker = L.marker([11.5444, -72.9072])
+// Marcador de Tunja (capital de Boyacá)
+const tunjaMarker = L.marker([5.5353, -73.3678])
     .addTo(map)
-    .bindPopup('<b>Riohacha</b><br>Capital de La Guajira');
+    .bindPopup('<b>Tunja</b><br>Capital de Boyacá');
