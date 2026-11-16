@@ -1,5 +1,5 @@
 // Crear el mapa centrado en el departamento de La Guajira
-const map = L.map('map').setView([11.35, -72.5], 8);
+const map = L.map('map').setView([11.35, -72.5], 10);
 
 // Agregar capa base de OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,6 +50,7 @@ fetch(departamentosWFSUrl)
         // Extensión de La Guajira
         const guajiraBounds = departamentosGeoJSON.getBounds();
 
+               
         // Restringir las teselas de ambos WMS a la extensión de La Guajira
         departamentosWMS.options.bounds = guajiraBounds;
         departamentosWMS.redraw();
@@ -94,12 +95,12 @@ baseMaps["OpenStreetMap"].addTo(map);
 
 // ============================================================
 // Capas detalladas de La Guajira (cartografía base IGAC/DANE)
-// Datos recortados por departamento en datos/44_LA_GUAJIRA/.
+// Datos recortados por departamento en datos/41_Huila/.
 // Se cargan de forma diferida (lazy): solo se descarga el GeoJSON
 // cuando el usuario activa la capa en el control, porque algunas
 // (Drenaje, Curvas de Nivel, Vías) pesan varios MB.
 // ============================================================
-const guajiraDataDir = 'https://epiragauta.github.io/geoservicios_y_websites/webapp/datos/44_LA_GUAJIRA/';
+const guajiraDataDir = './datos/44_LA_GUAJIRA/';
 
 const capasGuajira = [
     {
@@ -228,12 +229,7 @@ function highlightFeature(e) {
 }
 
 function resetHighlight(e) {
-    const layer = e.target;
-    layer.setStyle({
-        weight: 2,
-        color: '#232323',
-        fillOpacity: 0.5
-    });
+    departamentosGeoJSON.resetStyle(e.target);
 }
 
 function zoomToFeature(e) {
